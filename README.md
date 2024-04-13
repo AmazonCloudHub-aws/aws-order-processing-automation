@@ -28,5 +28,6 @@ The primary goal of this repository is to streamline the deployment and manageme
 ## Architecture Diagram
 
 Below is the architecture diagram showing the interaction between S3, Lambda, and DynamoDB with the necessary IAM roles:
+![aws](https://github.com/dhamsey3/aws-s3-lambda-dynamodb-terraform/assets/73405591/f4259100-777e-482c-96d2-28a668abff26)
 
-![Architecture Diagram](/Users/damilolaijato/Desktop/github/aws.png)
+
