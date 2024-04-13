@@ -8,6 +8,7 @@ resource "aws_s3_bucket" "top_secret_data" {
     enabled = true
   }
 }
+
 resource "aws_s3_bucket_notification" "top_secret_notification" {
   bucket = aws_s3_bucket.top_secret_data.id
 
@@ -106,3 +107,5 @@ resource "aws_dynamodb_table" "table" {
     Environment = "Production"
   }
 }
+
+

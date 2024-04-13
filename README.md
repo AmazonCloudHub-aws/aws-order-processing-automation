@@ -25,3 +25,8 @@ The primary goal of this repository is to streamline the deployment and manageme
 5. **Apply Changes**: Apply the changes by running `terraform apply`. Review and confirm the changes to deploy the infrastructure.
 6. **Manage Infrastructure**: Use Terraform to manage and update the infrastructure as needed.
 
+## Architecture Diagram
+
+Below is the architecture diagram showing the interaction between S3, Lambda, and DynamoDB with the necessary IAM roles:
+
+![Architecture Diagram](/Users/damilolaijato/Desktop/github/aws.png)
