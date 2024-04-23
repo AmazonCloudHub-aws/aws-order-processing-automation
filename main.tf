@@ -3,6 +3,10 @@ resource "aws_s3_bucket" "top_secret_data" {
   bucket = "top-secret-data"
   acl    = "private"
 
+  provisioner "local-exec" {
+    command = "bash ${path.module}/check_bucket.sh ${aws_s3_bucket.top_secret_data.id}"
+  }
+
   versioning {
     enabled = true
   }
