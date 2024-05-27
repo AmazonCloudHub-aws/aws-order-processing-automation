@@ -1,29 +1,4 @@
-# AWS S3 Lambda DynamoDB Terraform
 
-This repository contains Terraform configurations for provisioning essential AWS infrastructure components, such as S3 buckets, Lambda functions, and DynamoDB tables. 
-
-## Overview
-
-The provided Terraform configuration automates the setup and configuration of a serverless architecture. It facilitates seamless integration between S3 event triggers and DynamoDB data storage.
-
-## Components
-
-- **S3 Buckets**: Sets up S3 buckets to store and manage data.
-- **Lambda Functions**: Defines Lambda functions for processing events triggered by S3 actions.
-- **DynamoDB Tables**: Creates DynamoDB tables for storing and managing structured data.
-
-## Purpose
-
-The primary goal of this repository is to streamline the deployment and management of AWS serverless infrastructure. By using Terraform, users can easily provision the necessary resources while ensuring consistency and repeatability across deployments.
-
-## Usage
-
-1. **Clone Repository**: Clone this repository to your local machine.
-2. **Configure Terraform**: Customize the Terraform configurations according to your requirements.
-3. **Initialize Terraform**: Run `terraform init` to initialize Terraform and download necessary providers.
-4. **Plan Deployment**: Execute `terraform plan` to preview the changes Terraform will make to your infrastructure.
-5. **Apply Changes**: Apply the changes by running `terraform apply`. Review and confirm the changes to deploy the infrastructure.
-6. **Manage Infrastructure**: Use Terraform to manage and update the infrastructure as needed.
 
 ## Architecture Diagram
 
@@ -31,3 +6,134 @@ Below is the architecture diagram showing the interaction between S3, Lambda, an
 ![aws](https://github.com/dhamsey3/aws-s3-lambda-dynamodb-terraform/assets/73405591/f4259100-777e-482c-96d2-28a668abff26)
 
 
+# AWS Infrastructure Setup with Terraform
+
+## Overview
+
+This repository contains a Terraform configuration to set up a comprehensive AWS infrastructure. The setup includes an S3 bucket for data storage, a Lambda function for data processing, and a DynamoDB table for data persistence. Additionally, it configures necessary IAM roles and policies, logging, and monitoring using CloudWatch and SNS.
+
+## Table of Contents
+
+- [Prerequisites](#prerequisites)
+- [Setup Instructions](#setup-instructions)
+- [Terraform Configuration Details](#terraform-configuration-details)
+  - [S3 Bucket](#s3-bucket)
+  - [S3 Bucket Notification](#s3-bucket-notification)
+  - [IAM Roles and Policies](#iam-roles-and-policies)
+  - [Lambda Function](#lambda-function)
+  - [DynamoDB Table](#dynamodb-table)
+  - [Logging and Monitoring](#logging-and-monitoring)
+- [Testing and Verification](#testing-and-verification)
+- [Cleaning Up](#cleaning-up)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+- [Terraform](https://www.terraform.io/downloads.html) (version 0.12 or later)
+- [AWS CLI](https://aws.amazon.com/cli/) (configured with appropriate access)
+- An AWS account with permissions to create the necessary resources
+
+## Setup Instructions
+
+1. **Clone the Repository**:
+    ```sh
+    git clone https://github.com/dhamsey3/aws-data-automation.git
+    ```
+
+2. **Initialize Terraform**:
+    ```sh
+    terraform init
+    ```
+
+3. **Review and Modify Configuration**:
+    - Open the `main.tf` file and review the configuration.
+    - Modify any parameters (such as resource names, tags, etc.) as needed.
+
+4. **Apply the Terraform Configuration**:
+    ```sh
+    terraform apply
+    ```
+    - Review the plan and type `yes` to apply.
+
+## Terraform Configuration Details
+
+### S3 Bucket
+
+- **Resource**: `aws_s3_bucket.top_secret_data`
+- **Configuration**:
+  - Bucket name: `top-secret-data`
+  - ACL: `private`
+  - Versioning: enabled
+  - Server-side encryption: AES256
+  - Lifecycle rule: Expire objects after 90 days
+
+### S3 Bucket Notification
+
+- **Resource**: `aws_s3_bucket_notification.top_secret_notification`
+- **Configuration**:
+  - Triggers the Lambda function `process_order_function` on object creation events with prefix `input/`
+
+### IAM Roles and Policies
+
+- **IAM Role**: `aws_iam_role.lambda_execution`
+  - Allows Lambda service to assume the role
+- **Policies**:
+  - `aws_iam_policy.lambda_logs_policy`: Allows logging to CloudWatch
+  - `aws_iam_policy.lambda_s3_dynamodb_policy`: Allows access to S3 bucket, DynamoDB table, and invoking Lambda functions
+
+### Lambda Function
+
+- **Resource**: `aws_lambda_function.process_order_function`
+- **Configuration**:
+  - Function name: `process-order-function`
+  - Runtime: `python3.8`
+  - Handler: `lambda_function.lambda_handler`
+  - Memory size: 256 MB
+  - Timeout: 15 seconds
+  - Source code: `lambda/lambda_function.zip`
+  - Environment variables: `TABLE_NAME` set to the DynamoDB table name
+
+### DynamoDB Table
+
+- **Resource**: `aws_dynamodb_table.table`
+- **Configuration**:
+  - Table name: `my-table`
+  - Billing mode: `PAY_PER_REQUEST`
+  - Primary key: `id` (string)
+  - Server-side encryption: enabled
+
+### Logging and Monitoring
+
+- **CloudWatch Log Group**: `aws_cloudwatch_log_group.lambda_log_group`
+  - Log group for the Lambda function with a 14-day retention
+- **CloudWatch Alarm**: `aws_cloudwatch_metric_alarm.lambda_error_alarm`
+  - Alarm for Lambda function errors, sends notifications to an SNS topic
+- **SNS Topic**: `aws_sns_topic.lambda_notifications`
+  - Topic for notifications
+- **SNS Subscription**: `aws_sns_topic_subscription.lambda_notifications_email`
+  - Email subscription for the SNS topic
+
+## Testing and Verification
+
+After applying the Terraform configuration, you can verify the setup as follows:
+
+1. **Upload a Test File to S3**:
+    - Upload a file to the `top-secret-data` bucket with the prefix `input/`.
+    - Verify that the Lambda function is triggered and processes the file.
+
+2. **Check DynamoDB Table**:
+    - Verify that the processed data is correctly stored in the DynamoDB table.
+
+3. **Monitor Logs and Alarms**:
+    - Check the CloudWatch log group for logs generated by the Lambda function.
+    - Ensure there are no errors and that the CloudWatch alarm is not triggered.
+
+## Cleaning Up
+
+To clean up and remove all resources created by this Terraform configuration:
+
+```sh
+terraform destroy
