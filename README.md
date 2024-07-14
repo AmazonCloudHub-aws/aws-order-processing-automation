@@ -6,11 +6,11 @@ Below is the architecture diagram showing the interaction between S3, Lambda, an
 ![aws](https://github.com/dhamsey3/aws-s3-lambda-dynamodb-terraform/assets/73405591/f4259100-777e-482c-96d2-28a668abff26)
 
 
-# AWS Infrastructure Setup with Terraform
+# AWS E-commerce Order Processing Solution Infrastructure Setup with Terraform
 
 ## Overview
 
-This repository contains a Terraform configuration to set up a comprehensive AWS infrastructure. The setup includes an S3 bucket for data storage, a Lambda function for data processing, and a DynamoDB table for data persistence. Additionally, it configures necessary IAM roles and policies, logging, and monitoring using CloudWatch and SNS.
+This project can be used as an automated solution for processing e-commerce orders using AWS services. The architecture ensures secure storage, real-time processing, and efficient monitoring of order data. The setup includes an S3 bucket for data storage, a Lambda function for data processing, and a DynamoDB table for data persistence. Additionally, it configures necessary IAM roles and policies, logging, and monitoring using CloudWatch and SNS.
 
 ## Table of Contents
 
